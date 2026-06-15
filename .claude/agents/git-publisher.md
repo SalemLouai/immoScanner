@@ -4,8 +4,7 @@ description: >
   Git Publisher. Use as the very last step, ONLY if the security verdict is GO or
   Conditional GO. Creates a branch, commits output/, pushes and opens a Pull Request
   via the GitHub MCP server. Never pushes to main/master, never force-pushes.
-tools: Bash, Read, mcp__github__create_pull_request, mcp__github__create_branch, mcp__github__push_files
-mcpServers: github
+tools: Bash, Read
 model: haiku
 ---
 
