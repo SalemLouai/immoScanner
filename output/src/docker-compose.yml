@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  # ── .NET backend ────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=/data/immoscorer.db
+      - Scraping__Mode=Fixture
+      - Queue__Provider=InMemory
+      - Cors__AllowedOrigins__0=http://localhost:5173
+    volumes:
+      - db-data:/data
+      - dvf-cache:/app/dvf-cache
+    restart: unless-stopped
+
+  # ── React frontend dev server ────────────────────────────────────────────────
+  frontend:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  dvf-cache:
